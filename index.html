@@ -92,7 +92,7 @@
     const firebaseConfig = {
       apiKey: "AIzaSyDX0J6Y8JmhFGQmLheSJqYeN6i1ZAQov_w",
       authDomain: "linkchat-d8db2.firebaseapp.com",
-      databaseURL: "https://linkchat-d8db2.firebaseio.com",
+      databaseURL: "https://linkchat-d8db2-default-rtdb.firebaseio.com",
       projectId: "linkchat-d8db2",
       storageBucket: "linkchat-d8db2.appspot.com",
       messagingSenderId: "696605736194",
@@ -146,22 +146,6 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
           }
         });
-
-        // Prevent message duplication
-        let lastMessageTimestamp = null;
-
-        const checkDuplicateMessages = (snapshot) => {
-          const message = snapshot.val();
-          if (message.timestamp !== lastMessageTimestamp) {
-            lastMessageTimestamp = message.timestamp;
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message.text;
-            messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-          }
-        };
-
-        onChildAdded(messagesRef, checkDuplicateMessages);
       }
     };
 
