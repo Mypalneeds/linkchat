@@ -51,9 +51,80 @@
     <input type="text" id="message-input" placeholder="Type your message..." />
   </div>
   
-  <!-- Firebase App -->
-  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js"></script>
-  <script src="script.js"></script>
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+    import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyDX0J6Y8JmhFGQmLheSJqYeN6i1ZAQov_w",
+    authDomain: "linkchat-d8db2.firebaseapp.com",
+    databaseURL: "https://linkchat-d8db2.firebaseapp.com",
+    projectId: "linkchat-d8db2",
+    storageBucket: "linkchat-d8db2.appspot.com",
+    messagingSenderId: "696605736194",
+    appId: "1:696605736194:web:7a072f5adfa8ba8637561b"
+};
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const roomIdInput = document.getElementById('room-id-input');
+    const joinButton = document.getElementById('join-button');
+    const generateButton = document.getElementById('generate-button');
+    const generatedIdDiv = document.getElementById('generated-id');
+    const messageInput = document.getElementById('message-input');
+    const messagesDiv = document.getElementById('messages');
+
+    // Function to generate a unique room ID
+    const generateRoomId = () => {
+      // Generate a unique ID (e.g., a random UUID)
+      const roomId = 'room-' + Math.random().toString(36).substr(2, 9);
+      generatedIdDiv.textContent = `Room ID: ${roomId}`;
+      roomIdInput.value = roomId;
+    };
+
+    // Function to join a chat room
+    const joinChatRoom = () => {
+      const roomId = roomIdInput.value.trim();
+      if (roomId) {
+        const messagesRef = ref(database, 'chatrooms/' + roomId);
+        
+        // Clear previous messages
+        messagesDiv.innerHTML = '';
+        
+        // Listen for new messages
+        onChildAdded(messagesRef, (snapshot) => {
+          const message = snapshot.val();
+          const messageElement = document.createElement('div');
+          messageElement.textContent = message.text;
+          messagesDiv.appendChild(messageElement);
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+
+        // Send a message
+        messageInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            const message = messageInput.value.trim();
+            if (message) {
+              push(messagesRef, {
+                text: message,
+                timestamp: Date.now()
+              });
+              messageInput.value = '';
+            }
+          }
+        });
+      }
+    };
+
+    // Generate a new room ID when button is clicked
+    generateButton.addEventListener('click', generateRoomId);
+
+    // Join chat room when button is clicked
+    joinButton.addEventListener('click', joinChatRoom);
+  </script>
 </body>
 </html>
