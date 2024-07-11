@@ -1,26 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chat App</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Chat App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #chat-container {
+      width: 300px;
+      margin: auto;
+    }
+    #messages {
+      height: 300px;
+      border: 1px solid #ddd;
+      overflow-y: scroll;
+    }
+    #message-input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #room-id-input {
+      width: calc(100% - 20px);
+      margin: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #join-button, #generate-button {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #generated-id {
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="container text-center">
-        <h1 class="my-4">Simple Chat App</h1>
-        <div id="link-generator" class="mb-4">
-            <button class="btn btn-primary" onclick="generateLink()">Generate Chat Link</button>
-            <p id="chat-link" class="mt-2"></p>
-            <button id="enter-chat-btn" class="btn btn-success d-none" onclick="enterChat()">Enter Chat</button>
-        </div>
-        <div id="chat" class="d-none">
-            <div id="messages" class="mb-4"></div>
-            <input type="text" id="message-input" class="form-control" placeholder="Type your message">
-            <button class="btn btn-primary mt-2" onclick="sendMessage()">Send</button>
-        </div>
-    </div>
-    <script src="script.js"></script>
+  <div id="chat-container">
+    <button id="generate-button">Generate Room ID</button>
+    <div id="generated-id">Your Room ID will appear here</div>
+    <input type="text" id="room-id-input" placeholder="Enter room ID" />
+    <button id="join-button">Join Chat</button>
+    <div id="messages"></div>
+    <input type="text" id="message-input" placeholder="Type your message..." />
+  </div>
+  
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
