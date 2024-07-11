@@ -1,66 +1,72 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const chatId = urlParams.get('chat');
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDX0J6Y8JmhFGQmLheSJqYeN6i1ZAQov_w",
+    authDomain: "linkchat-d8db2.firebaseapp.com",
+    databaseURL: "https://linkchat-d8db2.firebaseapp.com",
+    projectId: "linkchat-d8db2",
+    storageBucket: "linkchat-d8db2.appspot.com",
+    messagingSenderId: "696605736194",
+    appId: "1:696605736194:web:7a072f5adfa8ba8637561b"
+};
 
-    if (chatId) {
-        showEnterChatButton();
-    }
-});
-
-function generateLink() {
-    const chatId = generateChatId();
-    const link = `${window.location.origin}${window.location.pathname}?chat=${chatId}`;
-    document.getElementById('chat-link').innerText = link;
-    document.getElementById('chat-link').setAttribute('href', link);
-    document.getElementById('chat-link').classList.add('d-block');
-    document.getElementById('enter-chat-btn').classList.remove('d-none');
-    enterChat();
-}
-
-function generateChatId() {
-    return Math.random().toString(36).substring(2, 15);
-}
-
-function showEnterChatButton() {
-    document.getElementById('link-generator').classList.remove('d-none');
-    document.getElementById('enter-chat-btn').classList.remove('d-none');
-}
-
-function enterChat() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const chatId = urlParams.get('chat');
-
-    document.getElementById('link-generator').classList.add('d-none');
-    document.getElementById('chat').classList.remove('d-none');
-
-    if (chatId) {
-        loadMessages(chatId);
-        listenForMessages(chatId);
-    }
-}
-
-function loadMessages(chatId) {
-    const messages = JSON.parse(localStorage.getItem(chatId)) || [];
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = '';
-
-    messages.forEach(message => {
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  
+  const database = firebase.database();
+  let messagesRef;
+  const roomIdInput = document.getElementById('room-id-input');
+  const joinButton = document.getElementById('join-button');
+  const generateButton = document.getElementById('generate-button');
+  const generatedIdDiv = document.getElementById('generated-id');
+  const messageInput = document.getElementById('message-input');
+  const messagesDiv = document.getElementById('messages');
+  
+  // Function to generate a unique room ID
+  const generateRoomId = () => {
+    // Generate a unique ID (e.g., a random number or UUID)
+    const roomId = 'room-' + Math.random().toString(36).substr(2, 9);
+    generatedIdDiv.textContent = `Room ID: ${roomId}`;
+    roomIdInput.value = roomId;
+  };
+  
+  // Function to join a chat room
+  const joinChatRoom = () => {
+    const roomId = roomIdInput.value.trim();
+    if (roomId) {
+      messagesRef = database.ref('chatrooms/' + roomId);
+      
+      // Clear previous messages
+      messagesDiv.innerHTML = '';
+      
+      // Listen for new messages
+      messagesRef.on('child_added', (snapshot) => {
+        const message = snapshot.val();
         const messageElement = document.createElement('div');
-        messageElement.classList.add('message', message.sender === 'me' ? 'me' : 'them');
-        messageElement.innerText = message.text;
-        messagesContainer.appendChild(messageElement);
-    });
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function sendMessage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const chatId = urlParams.get('chat');
-    const messageInput = document.getElementById('message-input');
-    const messageText = messageInput.value.trim();
-
-    if (messageText) {
-        const messages = JSON.parse(localStorage.getItem(chatId)) || [];
-        const message = {
-            sender: 'me',
-           
+        messageElement.textContent = message.text;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+    }
+  };
+  
+  // Generate a new room ID when button is clicked
+  generateButton.addEventListener('click', generateRoomId);
+  
+  // Join chat room when button is clicked
+  joinButton.addEventListener('click', joinChatRoom);
+  
+  // Send a message
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const message = messageInput.value.trim();
+      if (message && messagesRef) {
+        messagesRef.push({
+          text: message,
+          timestamp: Date.now()
+        });
+        messageInput.value = '';
+      }
+    }
+  });
+  
