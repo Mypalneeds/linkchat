@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container text-center">
+        <h1 class="my-4">Simple Chat App</h1>
+        <div id="link-generator" class="mb-4">
+            <button class="btn btn-primary" onclick="generateLink()">Generate Chat Link</button>
+            <p id="chat-link" class="mt-2"></p>
+        </div>
+        <div id="chat" class="d-none">
+            <div id="messages" class="mb-4"></div>
+            <input type="text" id="message-input" class="form-control" placeholder="Type your message">
+            <button class="btn btn-primary mt-2" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
