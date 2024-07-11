@@ -1,0 +1,9 @@
+{
+   apiKey: "AIzaSyDX0J6Y8JmhFGQmLheSJqYeN6i1ZAQov_w",
+    authDomain: "linkchat-d8db2.firebaseapp.com",
+    databaseURL: "https://linkchat-d8db2.firebaseapp.com",
+    projectId: "linkchat-d8db2",
+    storageBucket: "linkchat-d8db2.appspot.com",
+    messagingSenderId: "696605736194",
+    appId: "1:696605736194:web:7a072f5adfa8ba8637561b"
+}
