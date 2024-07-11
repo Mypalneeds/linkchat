@@ -3,10 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatId = urlParams.get('chat');
 
     if (chatId) {
-        document.getElementById('link-generator').classList.add('d-none');
-        document.getElementById('chat').classList.remove('d-none');
-        loadMessages(chatId);
-        listenForMessages(chatId);
+        showEnterChatButton();
     }
 });
 
@@ -16,10 +13,30 @@ function generateLink() {
     document.getElementById('chat-link').innerText = link;
     document.getElementById('chat-link').setAttribute('href', link);
     document.getElementById('chat-link').classList.add('d-block');
+    document.getElementById('enter-chat-btn').classList.remove('d-none');
+    enterChat();
 }
 
 function generateChatId() {
     return Math.random().toString(36).substring(2, 15);
+}
+
+function showEnterChatButton() {
+    document.getElementById('link-generator').classList.remove('d-none');
+    document.getElementById('enter-chat-btn').classList.remove('d-none');
+}
+
+function enterChat() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const chatId = urlParams.get('chat');
+
+    document.getElementById('link-generator').classList.add('d-none');
+    document.getElementById('chat').classList.remove('d-none');
+
+    if (chatId) {
+        loadMessages(chatId);
+        listenForMessages(chatId);
+    }
 }
 
 function loadMessages(chatId) {
@@ -46,36 +63,4 @@ function sendMessage() {
         const messages = JSON.parse(localStorage.getItem(chatId)) || [];
         const message = {
             sender: 'me',
-            text: messageText
-        };
-
-        messages.push(message);
-        localStorage.setItem(chatId, JSON.stringify(messages));
-        messageInput.value = '';
-
-        const messagesContainer = document.getElementById('messages');
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', 'me');
-        messageElement.innerText = messageText;
-        messagesContainer.appendChild(messageElement);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-}
-
-function listenForMessages(chatId) {
-    setInterval(() => {
-        const messages = JSON.parse(localStorage.getItem(chatId)) || [];
-        const messagesContainer = document.getElementById('messages');
-        const currentMessageCount = messagesContainer.children.length;
-
-        if (messages.length > currentMessageCount) {
-            for (let i = currentMessageCount; i < messages.length; i++) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', messages[i].sender === 'me' ? 'me' : 'them');
-                messageElement.innerText = messages[i].text;
-                messagesContainer.appendChild(messageElement);
-            }
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-    }, 1000);
-}
+           
