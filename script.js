@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('link-generator').classList.add('d-none');
         document.getElementById('chat').classList.remove('d-none');
         loadMessages(chatId);
+        listenForMessages(chatId);
     }
 });
 
@@ -32,6 +33,7 @@ function loadMessages(chatId) {
         messageElement.innerText = message.text;
         messagesContainer.appendChild(messageElement);
     });
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function sendMessage() {
@@ -58,4 +60,22 @@ function sendMessage() {
         messagesContainer.appendChild(messageElement);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+}
+
+function listenForMessages(chatId) {
+    setInterval(() => {
+        const messages = JSON.parse(localStorage.getItem(chatId)) || [];
+        const messagesContainer = document.getElementById('messages');
+        const currentMessageCount = messagesContainer.children.length;
+
+        if (messages.length > currentMessageCount) {
+            for (let i = currentMessageCount; i < messages.length; i++) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', messages[i].sender === 'me' ? 'me' : 'them');
+                messageElement.innerText = messages[i].text;
+                messagesContainer.appendChild(messageElement);
+            }
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    }, 1000);
 }
